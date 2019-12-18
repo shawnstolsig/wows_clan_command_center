@@ -34,6 +34,7 @@ def openid_return(request):
 
     # handle site-side login here?  match with profile?
 
+    # NEXT STEP....HOW TO GET IT TO SAVE COOKIES OR SESSION INFO SO THAT YOU ARE LOGGED IN WHEN REDIRECTED TO WG
     # set session information to db
     request.session['account_id'] = account_id
     request.session['nickname'] = nickname
@@ -41,4 +42,5 @@ def openid_return(request):
     return HttpResponseRedirect(reverse('profiles:login_success', args=(nickname,)))
 
 def login_success(request, nickname):
-    return HttpResponse(f"<h1>Hello {nickname}!</h1>")
+    # return HttpResponse(f"<h1>Hello {nickname}!</h1>")
+    return HttpResponseRedirect("https://clans.worldofwarships.com/clans/wows/ladder/api/battles/?team=1")
