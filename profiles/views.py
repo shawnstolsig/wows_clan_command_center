@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect, HttpResponse
-from openid_wargaming.authentication import Authentication
-from openid_wargaming.verification import Verification
+from .authentication import Authentication
+from .verification import Verification
 from django.urls import reverse
 import re
 
@@ -42,5 +42,5 @@ def openid_return(request):
     return HttpResponseRedirect(reverse('profiles:login_success', args=(nickname,)))
 
 def login_success(request, nickname):
-    # return HttpResponse(f"<h1>Hello {nickname}!</h1>")
-    return HttpResponseRedirect("https://clans.worldofwarships.com/clans/wows/ladder/api/battles/?team=1")
+    return HttpResponse(f"<h1>Hello {nickname}!</h1>")
+    # return HttpResponseRedirect("https://clans.worldofwarships.com/clans/wows/ladder/api/battles/?team=1")
