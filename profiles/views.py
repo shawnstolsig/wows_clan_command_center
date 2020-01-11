@@ -14,6 +14,7 @@ def openid_send(request):
     return_to = 'http://localhost:8000/profiles/openid/return/'
     auth = Authentication(return_to=return_to)
     url = auth.authenticate('https://na.wargaming.net/id/openid/')
+    # url = auth.authenticate('https://api.worldoftanks.com/wot/auth/login/?application_id=cdcbc9fdb2ee0eb2f701d4622deb485c')
     return HttpResponseRedirect(url)
 
 def openid_return(request):
@@ -36,11 +37,17 @@ def openid_return(request):
 
     # NEXT STEP....HOW TO GET IT TO SAVE COOKIES OR SESSION INFO SO THAT YOU ARE LOGGED IN WHEN REDIRECTED TO WG
     # set session information to db
+    print(f"request.session is {request.session.__dict__}")
     request.session['account_id'] = account_id
     request.session['nickname'] = nickname
 
     return HttpResponseRedirect(reverse('profiles:login_success', args=(nickname,)))
 
 def login_success(request, nickname):
-    return HttpResponse(f"<h1>Hello {nickname}!</h1>")
+    try:
+        context = { 'nickname': nickname }
+        return render(request, "landing.html", context)
+    except KeyError:
+        return HttpResponse(status=400)
+
     # return HttpResponseRedirect("https://clans.worldofwarships.com/clans/wows/ladder/api/battles/?team=1")
