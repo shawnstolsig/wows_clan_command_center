@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WoWs CCC</title>
+
+    {% comment %} Style {% endcomment %}
+    <link rel="icon" href="{% static 'img\favicon.ico' %}"/>                {% comment %} Favicon       {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css\bootstrap.min.css' %}" />   {% comment %} Bootstrap CSS {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css\site.css' %}" />            {% comment %} Custom CSS    {% endcomment %}
+
+</head>
+
+<body>
+
+
+    {% comment %} Nav Bar {% endcomment %}
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="{% url 'clan_battles:dashboard' %}">WoWs Clan Command Center</a>
+                <ul class="nav">
+                    <li class="active"><a href="{% url 'clan_battles:dashboard' %}">Home</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} Put content from other templates here {% endcomment %}
+    {% block content %}
+
+
+
+
+    {% endblock content %}
+
+    {% comment %} JS sources:  {% endcomment %}
+    <script src="{% static 'js\jquery-3.4.1.min.js' %}"></script>               {% comment %} jQuery            {% endcomment %}
+    <script src="{% static 'js\bootstrap.bundle.min.js' %}"></script>           {% comment %} Bootstrap/Popper  {% endcomment %}
+    <script src="{% static 'js\axios.min.js' %}"></script>                      {% comment %} Axios             {% endcomment %}
+    <script src="{% static 'js\vue.js' %}"></script>                            {% comment %} Vue               {% endcomment %}
+    <script src="{% static 'js\site.js' %}"></script>                                          {% comment %} My JavaScript     {% endcomment %}
+</body>
+
+</html>

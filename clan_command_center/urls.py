@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('profiles/', include('profiles.urls')),
     path('wowsopenid/', include('wowsopenid.urls')),
+    path('', include('clan_battles.urls')),
 ]

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'profiles.apps.ProfilesConfig',
     'wowsopenid.apps.WowsopenidConfig',
+    'clan_battles.apps.ClanBattlesConfig',
 ]
 
 MIDDLEWARE = [
