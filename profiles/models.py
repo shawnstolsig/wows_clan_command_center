@@ -10,7 +10,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # WG's player id
-    player_id = models.IntegerField()
+    player_id = models.IntegerField(null=True, blank=True)
 
     # clan info
     clan_tag = models.CharField(null=True, blank=True, max_length=5)
@@ -24,7 +24,7 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        Profile.objects.create(user=instance) 
 
 # save changes to profile whenever User is changed
 @receiver(post_save, sender=User)
