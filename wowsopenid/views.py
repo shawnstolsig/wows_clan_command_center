@@ -23,7 +23,6 @@ class FirstStep(TemplateView):
             'path': reverse('wowsopenid:callback')
         }
         return_to = '{scheme}://{host}{path}'.format(**components)
-        print(f'return_to is {return_to}')
         auth = Authentication(return_to=return_to)
         url = auth.authenticate('https://na.wargaming.net/id/openid/')
 
