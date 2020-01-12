@@ -13,7 +13,7 @@ from .exceptions import OpenIDVerificationFailed
 
 
 class FirstStep(TemplateView):
-    template_name = 'home.html'
+    template_name = 'oid-login.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +32,7 @@ class FirstStep(TemplateView):
 
 
 class SecondStep(TemplateView):
-    template_name = 'second.html'
+    template_name = 'oid-callback.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -70,4 +70,4 @@ class SecondStep(TemplateView):
 
 def logout_user(request):
     logout(request)
-    return redirect(reverse('wowsopenid:first'))
+    return redirect(reverse('clan_battles:dashboard'))

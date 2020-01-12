@@ -3,14 +3,6 @@
 
 {% block content %}
 
-<h1>Login example page</h1>
-<div>
-    {% if user.is_authenticated %}
-        <p>You are authenticated with this Wargaming account: <strong>{{ request.user.username }}</strong></p>
-        <p><a href="{% url 'wowsopenid:logout' %}">Logout</a></p>
-    {% else %}
-        <a href="{{ url }}">Click here to login with your wargaming account.</a>
-    {% endif %}
-</div>
+<h1>This is where the user's dashboard will go.</h1>
 
 {% endblock content %}

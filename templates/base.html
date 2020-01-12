@@ -18,20 +18,45 @@
 
 <body>
 
-
     {% comment %} Nav Bar {% endcomment %}
-    <div class="container">
-        <div class="navbar">
-            <div class="navbar-inner">
-                <a class="brand" href="{% url 'clan_battles:dashboard' %}">WoWs Clan Command Center</a>
-                <ul class="nav">
-                    <li class="active"><a href="{% url 'clan_battles:dashboard' %}">Home</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                </ul>
-            </div>
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <a class="navbar-brand" href="{% url 'clan_battles:dashboard' %}">WoWs Clan Command Center</a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+            <ul class="navbar-nav mr-auto">
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'clan_battles:dashboard' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'clan_battles:dashboard' %}">Clan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'clan_battles:dashboard' %}">Settings</a>
+                </li>
+                {% endif %}
+
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'wowsopenid:logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">{{request.user.username}}</a>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'wowsopenid:login' %}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </div>
+    </nav>
 
     {% comment %} Put content from other templates here {% endcomment %}
     {% block content %}
@@ -46,7 +71,8 @@
     <script src="{% static 'js\bootstrap.bundle.min.js' %}"></script>           {% comment %} Bootstrap/Popper  {% endcomment %}
     <script src="{% static 'js\axios.min.js' %}"></script>                      {% comment %} Axios             {% endcomment %}
     <script src="{% static 'js\vue.js' %}"></script>                            {% comment %} Vue               {% endcomment %}
-    <script src="{% static 'js\site.js' %}"></script>                                          {% comment %} My JavaScript     {% endcomment %}
+    <script src="{% static 'js\site.js' %}"></script>                           {% comment %} My JavaScript     {% endcomment %}
+    
 </body>
 
 </html>
