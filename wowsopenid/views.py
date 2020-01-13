@@ -1,4 +1,6 @@
 import re
+import requests
+import json
 
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
@@ -6,6 +8,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+from data.config import api_key
 
 from .authentication import Authentication
 from .verification import Verification
@@ -45,7 +48,8 @@ class SecondStep(TemplateView):
             context['account_id'] = match.group(1)
             context['nickname'] = match.group(2)
             context['authenticated'] = True
-            self.create_user(context['nickname'])
+            self.create_user(context['nickname'], context['account_id'])
+
 
         except OpenIDVerificationFailed:
             context['authenticated'] = False
@@ -53,7 +57,7 @@ class SecondStep(TemplateView):
 
         return context
 
-    def create_user(self, nickname):
+    def create_user(self, nickname, wgid):
         try:
             user = User.objects.get(username__exact=nickname)
 
@@ -61,6 +65,16 @@ class SecondStep(TemplateView):
             password = User.objects.make_random_password(length=255)
             user = User.objects.create_user(nickname, '', password)
             user.first_name = nickname
+            user.profile.wgid = wgid
+
+            # get clan
+            payload = {
+                'application_id': api_key,
+                'account_id': wgid,
+            }
+            response = requests.get(f"https://api.worldofwarships.com/wows/clans/accountinfo/", params=payload)
+            page_query = json.loads(response.text)
+            user.profile.clan_id = page_query['data'][wgid]['clan_id']
             user.save()
 
         login(self.request, user)

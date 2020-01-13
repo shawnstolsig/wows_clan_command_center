@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
-from .models import Battle
+from django.http import HttpResponseRedirect
+from .models import Battle, ClanInstance, PlayerInstance
+from data.models import Clan, Ship
 import requests
 import json
 
@@ -19,33 +21,79 @@ def get_battles(request, region):
         realm = 'eu'
     elif region == 'SEA':
         realm = 'asia'
+    elif region == 'RU':
+        realm = 'ru'
 
-    payload = {
-        'team': 1,
-    }
     # commenting this out until season begins, unable to test between seasons
+    # payload = {
+    #     'team': 1,
+    # }
     # response = requests.get(f"https://clans.worldofwarships.{realm}/clans/wows/ladder/api/battles/", params=payload)
     # page_query = json.loads(response.text)
 
-    with open('sample_data.json') as json_file:
+    with open('clan_battles/sample_data.json', 'r', encoding='utf-8') as json_file:
         page_query = json.load(json_file)    
     
-    print("loaded battle page")
-    print(page_query)
+    print("loaded battle json:")
 
-    # add battles to DB
-    # added_to_db_counter = 0
-    # for battle in page_query['data']:
-    #     s, was_created = Skill.objects.get_or_create(
-    #         skill_id=skill,
-    #         skill_name=page_query['data'][skill]['name'],
-    #         skill_tier=page_query['data'][skill]['tier'],
-    #         skill_picture_url=page_query['data'][skill]['icon'],
-    #     )
-    #     if was_created:
-    #         added_to_db_counter += 1
+    # counters to track what's added to db
+    battle_added_to_db_counter = 0
+    claninstance_added_to_db_counter = 0
+    playerinstance_added_to_db_counter = 0
 
-    # verify skill load was successful
-    # print(f'{len(page_query["data"])} skills loaded from WG API, {added_to_db_counter} new DB additions')
+    # battles, clans, and players will be added to db using nested for loops
+    for battle in page_query:
+        # create Battle object
+        b, battle_was_created = Battle.objects.get_or_create(
+            battle_wgid = battle['id'],
+            battle_map = battle['map']['name'],
+            battle_realm = battle['realm'],
+            battle_arena_id = battle['arena_id'],
+            battle_finished_at = battle['finished_at'],
+            battle_season_number = battle['season_number'],
+        )
+        if battle_was_created:
+            battle_added_to_db_counter += 1
+
+            # create ClanInstance objects, only if battle was created
+            for team in battle['teams']:
+                c, claninstance_was_created = ClanInstance.objects.get_or_create(
+                    claninstance_wgid = team['id'],
+                    claninstance_clan = Clan.objects.get(clan_wgid=team['clan_id']),
+                    claninstance_battle = b,
+                    claninstance_team_no = battle['teams'].index(team),
+                    claninstance_division = team['division'],
+                    claninstance_league = team['league'],
+                    claninstance_rating_delta = team['rating_delta'],
+                    claninstance_result = team['result'],
+                    claninstance_rating = team['team_number'],
+                )
+                if claninstance_was_created:
+                    claninstance_added_to_db_counter += 1
+
+                    # create PlayerInstance objects, only if ClanInstance was created
+                    for player in team['players']:
+                        p, playerinstance_was_created = PlayerInstance.objects.get_or_create(
+                            playerinstance_wgid = player['spa_id'],
+                            playerinstance_player_name = player['nickname'],
+                            playerinstance_ship = Ship.objects.get(ship_id=player['vehicle_id']),
+                            playerinstance_claninstance = c,
+                            playerinstance_clan = Clan.objects.get(clan_wgid=player['clan_id']),
+                            playerinstance_survived = player['survived'],
+                        )
+                        if playerinstance_was_created:
+                            playerinstance_added_to_db_counter += 1
+        
+        else:
+            print(f"Battle not added to db.  Battle id: {b.battle_wgid}")
+
+
+    # verify clan battle load was successful
+    print(f"*** Results of clan battles pull: *** ")
+    print(f"*** Clan: {Clan.objects.get(clan_wgid=request.user.profile.clan_id).clan_tag}                     *** ")
+    print(f"*** Battles pulled: {len(page_query)}            *** ")
+    print(f"*** Battles added to db: {battle_added_to_db_counter}  *** ")
+    print(f"*** ClanInstances added to db: {claninstance_added_to_db_counter}  *** ")
+    print(f"*** PlayerInstance added to db: {playerinstance_added_to_db_counter}  *** ")
 
     return HttpResponseRedirect(reverse('clan_battles:dashboard'))

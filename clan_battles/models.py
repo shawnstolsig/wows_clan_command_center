@@ -1,5 +1,5 @@
 from django.db import models
-from data.models import Clan
+from data.models import Clan, Ship
 from profiles.models import Profile
 
 
@@ -28,9 +28,10 @@ class ClanInstance(models.Model):
     # characteristics 
     claninstance_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True)      # if clan is deleted, keep the ClanInstance for data purposes
     claninstance_battle = models.ForeignKey(Battle, on_delete=models.SET_NULL, null=True)   # if battle is deleted, keep the ClanInstance for data purposes
-    claninstance_team_no = models.IntegerField()        # two teams per clan battle, so this will be with 1 or 2.  team 1 will be player's clan
+    claninstance_team_no = models.IntegerField()        # two teams per clan battle, so this will be with 0 or 1.  team 0 will be player's (who first pulled the data) clan
     claninstance_division = models.IntegerField()       
     claninstance_league = models.IntegerField()
+    claninstance_rating = models.IntegerField()         # 1 is alpha, 2 is bravo
     claninstance_rating_delta = models.IntegerField()
     claninstance_result = models.CharField(max_length=10)
 
@@ -41,10 +42,14 @@ class ClanInstance(models.Model):
 class PlayerInstance(models.Model):
 
     # identifiers
+    playerinstance_wgid = models.IntegerField()
+    playerinstance_player_name = models.CharField(max_length=100)
 
     # characteristics
-    playerinstance_clan = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)             # if player's profile deleted, keep this PlayerInstance for data purposes              
+    playerinstance_ship = models.ForeignKey(Ship, on_delete=models.SET_NULL, null=True)                 # if ship is deleted, keep this PlayerInstance for data purposes              
     playerinstance_claninstance = models.ForeignKey(ClanInstance, on_delete=models.SET_NULL, null=True) # if battle is deleted, delete the PlayerInstance
-
+    playerinstance_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True)              # if player's profile deleted, keep this PlayerInstance for data purposes              
+    playerinstance_survived = models.BooleanField()
+    
     # date created (for potential future DB maintenance)
     date_created = models.DateTimeField(auto_now_add=True)
