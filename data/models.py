@@ -39,4 +39,9 @@ class Skill(models.Model):
     # store when skill added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
 
+# Clan: one created for each clan in the game
+class Clan(models.Model):
+
+    # store when skill added to database (in case it needs to be deleted later)
+    date_created = models.DateTimeField(auto_now_add=True)
 
