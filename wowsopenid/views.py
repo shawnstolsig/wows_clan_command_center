@@ -9,6 +9,7 @@ from django.contrib.auth import login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from data.config import api_key
+from data.models import Player, Clan
 
 from .authentication import Authentication
 from .verification import Verification
@@ -58,6 +59,16 @@ class SecondStep(TemplateView):
         return context
 
     def create_user(self, nickname, wgid):
+        realm = 'NA'
+        # resolve realm
+        if realm == 'NA':
+            realm_url = 'com'
+        elif realm == 'EU':
+            realm_url = 'eu'
+        elif realm == 'SEA':
+            realm_url = 'asia'
+
+
         try:
             user = User.objects.get(username__exact=nickname)
 
@@ -65,20 +76,27 @@ class SecondStep(TemplateView):
             password = User.objects.make_random_password(length=255)
             user = User.objects.create_user(nickname, '', password)
             user.first_name = nickname
-            user.profile.wgid = wgid
 
-            # get clan
+            # try to find Player object
+            p, was_created = Player.objects.get_or_create(player_wgid=wgid)
+            p.player_nickname = nickname
+            user.player = p
+
+            # get clan 
             payload = {
                 'application_id': api_key,
                 'account_id': wgid,
             }
-            response = requests.get(f"https://api.worldofwarships.com/wows/clans/accountinfo/", params=payload)
+            response = requests.get(f"https://api.worldofwarships.{realm_url}/wows/clans/accountinfo/", params=payload)
             page_query = json.loads(response.text)
-            user.profile.clan_id = page_query['data'][wgid]['clan_id']
+            clan_id = page_query['data'][wgid]['clan_id']
+            c, was_created = Clan.objects.get_or_create(clan_wgid=clan_id, clan_realm=realm)
+            p.player_clan = c
             user.save()
+            p.save()
 
         login(self.request, user)
-        return user
+        return user 
 
 
 def logout_user(request):

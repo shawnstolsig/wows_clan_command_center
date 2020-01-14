@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+
     'profiles.apps.ProfilesConfig',
     'wowsopenid.apps.WowsopenidConfig',
     'clan_battles.apps.ClanBattlesConfig',

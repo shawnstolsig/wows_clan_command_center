@@ -1,6 +1,6 @@
 from django.db import models
-from data.models import Clan, Ship
-from profiles.models import Profile
+from data.models import Clan, Ship, Player
+# from profiles.models import Profile
 
 
 # Battle: a particular clan battle that was played
@@ -46,6 +46,7 @@ class PlayerInstance(models.Model):
     playerinstance_player_name = models.CharField(max_length=100)
 
     # characteristics
+    playerinstance_player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True)
     playerinstance_ship = models.ForeignKey(Ship, on_delete=models.SET_NULL, null=True)                 # if ship is deleted, keep this PlayerInstance for data purposes              
     playerinstance_claninstance = models.ForeignKey(ClanInstance, on_delete=models.SET_NULL, null=True) # if battle is deleted, delete the PlayerInstance
     playerinstance_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True)              # if player's profile deleted, keep this PlayerInstance for data purposes              

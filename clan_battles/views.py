@@ -3,7 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 from .models import Battle, ClanInstance, PlayerInstance
-from data.models import Clan, Ship
+from data.models import Clan, Ship, Player
 import requests
 import json
 
@@ -12,23 +12,23 @@ class DashboardView(TemplateView):
     template_name = "dashboard.html"
 
 # get last 50 alpha and bravo battles
-def get_battles(request, region):
+def get_battles(request, realm):
 
-    # resolve region
-    if region == 'NA':
-        realm = 'com'
-    elif region == 'EU':
-        realm = 'eu'
-    elif region == 'SEA':
-        realm = 'asia'
-    elif region == 'RU':
-        realm = 'ru'
+    # resolve realm
+    if realm == 'NA':
+        realm_url = 'com'
+    elif realm == 'EU':
+        realm_url = 'eu'
+    elif realm == 'SEA':
+        realm_url = 'asia'
+    elif realm == 'RU':
+        realm_url = 'ru'
 
     # commenting this out until season begins, unable to test between seasons
     # payload = {
     #     'team': 1,
     # }
-    # response = requests.get(f"https://clans.worldofwarships.{realm}/clans/wows/ladder/api/battles/", params=payload)
+    # response = requests.get(f"https://clans.worldofwarships.{realm_url}/clans/wows/ladder/api/battles/", params=payload)
     # page_query = json.loads(response.text)
 
     with open('clan_battles/sample_data.json', 'r', encoding='utf-8') as json_file:
@@ -59,7 +59,10 @@ def get_battles(request, region):
             for team in battle['teams']:
                 c, claninstance_was_created = ClanInstance.objects.get_or_create(
                     claninstance_wgid = team['id'],
-                    claninstance_clan = Clan.objects.get(clan_wgid=team['clan_id']),
+                    claninstance_clan = Clan.objects.get_or_create(
+                        clan_wgid=team['clan_id'],
+                        clan_realm=realm
+                        )[0],
                     claninstance_battle = b,
                     claninstance_team_no = battle['teams'].index(team),
                     claninstance_division = team['division'],
@@ -71,18 +74,22 @@ def get_battles(request, region):
                 if claninstance_was_created:
                     claninstance_added_to_db_counter += 1
 
-                    # create PlayerInstance objects, only if ClanInstance was created
-                    for player in team['players']:
-                        p, playerinstance_was_created = PlayerInstance.objects.get_or_create(
-                            playerinstance_wgid = player['spa_id'],
-                            playerinstance_player_name = player['nickname'],
-                            playerinstance_ship = Ship.objects.get(ship_id=player['vehicle_id']),
-                            playerinstance_claninstance = c,
-                            playerinstance_clan = Clan.objects.get(clan_wgid=player['clan_id']),
-                            playerinstance_survived = player['survived'],
-                        )
-                        if playerinstance_was_created:
-                            playerinstance_added_to_db_counter += 1
+                    try: 
+                        # create PlayerInstance objects, only if ClanInstance was created
+                        for player in team['players']:
+                            p, playerinstance_was_created = PlayerInstance.objects.get_or_create(
+                                playerinstance_wgid = player['spa_id'],
+                                playerinstance_player = Player.objects.get_or_create(player_wgid=player['spa_id'])[0],
+                                playerinstance_player_name = player['nickname'],
+                                playerinstance_ship = Ship.objects.get(ship_id=player['vehicle_id']),
+                                playerinstance_claninstance = c,
+                                playerinstance_clan = Clan.objects.get(clan_wgid=player['clan_id']),
+                                playerinstance_survived = player['survived'],
+                            )
+                            if playerinstance_was_created:
+                                playerinstance_added_to_db_counter += 1
+                    except Ship.DoesNotExist:
+                        print("Ship not found, please update game data!")
         
         else:
             print(f"Battle not added to db.  Battle id: {b.battle_wgid}")
@@ -90,7 +97,7 @@ def get_battles(request, region):
 
     # verify clan battle load was successful
     print(f"*** Results of clan battles pull: *** ")
-    print(f"*** Clan: {Clan.objects.get(clan_wgid=request.user.profile.clan_id).clan_tag}                     *** ")
+    print(f"*** Clan: {request.user.player.player_clan.clan_tag}                     *** ")
     print(f"*** Battles pulled: {len(page_query)}            *** ")
     print(f"*** Battles added to db: {battle_added_to_db_counter}  *** ")
     print(f"*** ClanInstances added to db: {claninstance_added_to_db_counter}  *** ")
