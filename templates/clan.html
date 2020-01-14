@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static%}
+
+{% block content %}
+
+<h1>This is where the user's clan dashboard will go.</h1>
+<p><a href="{% url 'clan:update' 'NA' %}">Update clan info</a></p>
+
+{% endblock content %}

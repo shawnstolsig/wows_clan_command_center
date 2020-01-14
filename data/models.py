@@ -1,5 +1,5 @@
 from django.db import models
-# from profiles.models import Profile
+from clan.models import UserClan
 
 # Upgrade: for each upgrade slot in the game
 class Upgrade(models.Model):
@@ -28,6 +28,7 @@ class Ship(models.Model):
     # store when ship added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
 
+
 # Skill: commander skills
 class Skill(models.Model):
 
@@ -40,7 +41,7 @@ class Skill(models.Model):
     # store when skill added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
 
-# Clan: one created for each clan in the game
+# Clan: one created for each clan in the game.
 class Clan(models.Model):
 
     # identifier
@@ -67,6 +68,36 @@ class Player(models.Model):
     # characteristics
     # player_profile = models.OneToOneField(Profile, on_cascade=models.SET_NULL, null=True)   # links to website profile, if it exists
     player_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True)
+    player_userclan = models.ForeignKey(UserClan, on_delete=models.SET_NULL, null=True)
+    player_ships = models.ManyToManyField(Ship, null=True)
+    player_clan_role = models.CharField(max_length=20, null=True)
+    player_joined_at = models.IntegerField(null=True)
 
     # store when skill added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
+
+# ShipInstance: a ship owned by a specific player (extends Ship to include stats)
+class ShipInstance(models.Model):
+
+    # identifiers
+    shipinstance_ship = models.ForeignKey(Ship, on_delete=models.SET_NULL, null=True)
+    shipinstance_player = models.ForeignKey(Player, on_delete=models.CASCADE)
+
+    # characteristics
+    shipinstance_main_battery_hits = models.IntegerField(null=True)
+    shipinstance_main_battery_shots = models.IntegerField(null=True)
+    shipinstance_xp = models.IntegerField(null=True)
+    shipinstance_battles = models.IntegerField(null=True)
+    shipinstance_torpedoes_hits = models.IntegerField(null=True)
+    shipinstance_torpedoes_shots = models.IntegerField(null=True)
+    shipinstance_wins = models.IntegerField(null=True)
+    shipinstance_losses = models.IntegerField(null=True)
+    shipinstance_damage_dealt = models.IntegerField(null=True)
+    shipinstance_potential_damage = models.IntegerField(null=True)
+    shipinstance_spotting_damage = models.IntegerField(null=True)
+    shipinstance_cb_battles = models.IntegerField(default=0)
+    shipinstance_cb_wins = models.IntegerField(default=0)
+    shipinstance_cb_battles_survived = models.IntegerField(default=0)
+
+    # for db maintainence
+    date_created = models.DateTimeField(auto_now_add=True) 

@@ -22,7 +22,6 @@ def update_game_data(request, region):
     update_ships(realm)
     update_skills(realm)
     update_clans()
-    update_players(request, realm)
 
     return HttpResponseRedirect(reverse('clan_battles:dashboard'))
     
@@ -153,27 +152,3 @@ def update_clans():
     # verify clan load was successful
     print(f'{counter} clans across all realms, from WG API. {added_to_db_counter} new DB additions')
 
-def update_players(request, realm):
-    # ------------------ create players for logged in user's clan:-----------------------
-
-    # get player's clan
-    players_clan = request.user.profile.clan_id
-    payload = {
-        'application_id': api_key,
-        'clan_id': players_clan,
-        'fields': 'members_ids',
-    }
-    response = requests.get(f"https://api.worldofwarships.{realm}/wows/clans/info/", params=payload)
-    page_query = json.loads(response.text)
-
-    added_to_db_counter = 0         
-    for player in page_query['data'][str(players_clan)]['members_ids']:
-        p, was_created = Player.objects.get_or_create(
-            player_wgid = player,
-            player_clan = Clan.objects.get(clan_wgid=players_clan)
-        )
-        if was_created:
-            added_to_db_counter += 1
-
-    # verify player load was successful
-    print(f"{len(page_query['data'][str(players_clan)]['members_ids'])} players in clan, from WG API. {added_to_db_counter} new DB additions")

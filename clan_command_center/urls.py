@@ -21,5 +21,6 @@ urlpatterns = [
     path('profiles/', include('profiles.urls')),
     path('wowsopenid/', include('wowsopenid.urls')),
     path('data/', include('data.urls')),
+    path('clan/', include('clan.urls')),
     path('', include('clan_battles.urls')),
 ]
