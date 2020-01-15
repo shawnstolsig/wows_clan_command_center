@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView
-# from .models import UserClan
 from data.models import Ship, ShipInstance, Player, Clan
 from data.config import api_key
 import requests

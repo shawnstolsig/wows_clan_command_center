@@ -81,7 +81,7 @@ def get_battles(request, realm):
                                 playerinstance_wgid = player['spa_id'],
                                 playerinstance_player = Player.objects.get_or_create(player_wgid=player['spa_id'])[0],
                                 playerinstance_player_name = player['nickname'],
-                                playerinstance_ship = Ship.objects.get(ship_id=player['vehicle_id']),
+                                playerinstance_ship = Ship.objects.get(ship_wgid=player['vehicle_id']),
                                 playerinstance_claninstance = c,
                                 playerinstance_clan = Clan.objects.get(clan_wgid=player['clan_id']),
                                 playerinstance_survived = player['survived'],
