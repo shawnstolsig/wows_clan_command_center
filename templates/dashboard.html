@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% load static%}
 
-{% block content %}
+{% block html_content %}
 
 <h1>This is where the user's dashboard will go.</h1>
 <p><a href="{% url 'clan_battles:get_battles' 'NA' %}">Get CB results</a></p>
 
-{% endblock content %}
+{% endblock html_content %}
+
+{% block js_content %}
+{% endblock js_content %}

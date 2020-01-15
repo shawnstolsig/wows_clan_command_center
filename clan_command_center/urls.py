@@ -22,5 +22,6 @@ urlpatterns = [
     path('wowsopenid/', include('wowsopenid.urls')),
     path('data/', include('data.urls')),
     path('clan/', include('clan.urls')),
+    path('api/v1/', include('api.urls')),
     path('', include('clan_battles.urls')),
 ]

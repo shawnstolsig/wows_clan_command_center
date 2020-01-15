@@ -1,9 +1,46 @@
 {% extends 'base.html' %}
 {% load static%}
 
-{% block content %}
+{% block html_content %}
 
-<h1>This is where the user's clan dashboard will go.</h1>
+
 <p><a href="{% url 'data:update_user_clan' 'NA' %}">Update clan info</a></p>
 
-{% endblock content %}
+<div id="app">
+    <div class="player" v-for="player in playerList" v-bind:key="player.id">
+        <h4> Name: [[ player.player_nickname ]] </h4>
+        <h6> WG Id: [[ player.player_wgid ]] </h6>
+        <h6> Clan role: [[ player.player_clan_role ]] </h6>
+        <h6> Joined clan: [[ player.player_joined_at ]] </h6>
+    </div>
+</div>
+
+{% endblock html_content %}
+
+{% block js_content %}
+
+// Vue app templates
+let vm = new Vue({
+    el: "#app",
+    delimiters: ['[[',']]'],
+    data: {
+        playerList: [],
+    },
+    methods: {
+        getPlayerList(){
+            axios({
+                method: 'get',
+                url: '/api/v1/players/',
+
+            }).then(response => this.playerList = response)
+        },
+    },
+    computed: {
+    }, 
+    mounted(){
+       this.getPlayerList();
+    }
+});
+
+
+{% endblock js_content %}

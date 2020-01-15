@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'wowsopenid.apps.WowsopenidConfig',
     'clan_battles.apps.ClanBattlesConfig',
     'data.apps.DataConfig',
-    'clan.apps.ClanConfig'
+    'clan.apps.ClanConfig',
+    'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [

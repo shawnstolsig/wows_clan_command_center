@@ -59,19 +59,25 @@
     </nav>
 
     {% comment %} Put content from other templates here {% endcomment %}
-    {% block content %}
+    {% block html_content %}
 
 
 
 
-    {% endblock content %}
+    {% endblock html_content %}
 
     {% comment %} JS sources:  {% endcomment %}
     <script src="{% static 'js\jquery-3.4.1.min.js' %}"></script>               {% comment %} jQuery            {% endcomment %}
     <script src="{% static 'js\bootstrap.bundle.min.js' %}"></script>           {% comment %} Bootstrap/Popper  {% endcomment %}
     <script src="{% static 'js\axios.min.js' %}"></script>                      {% comment %} Axios             {% endcomment %}
     <script src="{% static 'js\vue.js' %}"></script>                            {% comment %} Vue               {% endcomment %}
-    <script src="{% static 'js\site.js' %}"></script>                           {% comment %} My JavaScript     {% endcomment %}
+    <script src="{% static 'js\site.js' %}"></script>                           {% comment %} External JSpt     {% endcomment %}
+    
+    {% comment %} In-template Vue apps {% endcomment %}
+    <script>
+        {% block js_content %}
+        {% endblock js_content %}
+    </script>                           
     
 </body>
 

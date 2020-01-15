@@ -1,4 +1,4 @@
-// // Vue component template
+// Vue component template
 // Vue.component('component-name', {
 //     props: [],
 //     data: function () {

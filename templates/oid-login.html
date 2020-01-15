@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
+{% block html_content %}
     <p>This website uses Wargaming's authentication protocol...please click the button below to login!</p>
     <div>
         {% if user.is_authenticated %}
@@ -11,5 +11,5 @@
             <a href="{{ url }}">Click here to login with your wargaming account.</a>
         {% endif %}
     </div>
-{% endblock content %}
+{% endblock html_content %}
     

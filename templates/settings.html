@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
+{% block html_content %}
 
     <p><a href="{% url 'data:update_game_data' 'NA' %}">Update game data</a></p>
     
-{% endblock content %}
+{% endblock html_content %}
+
+{% block js_content %}
+{% endblock js_content %}
