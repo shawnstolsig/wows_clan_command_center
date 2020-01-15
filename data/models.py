@@ -59,6 +59,9 @@ class Clan(models.Model):
     # store when skill added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.clan_tag
+
 # Player: a Player will be created for each player in each website user's clan
 # This will be helpful for storing CB specific info (ship list, stats, etc) even if they 
 # are not users of the site themselves
@@ -70,7 +73,7 @@ class Player(models.Model):
     player_user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 
     # characteristics
-    player_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True)
+    player_clan = models.ForeignKey(Clan, on_delete=models.SET_NULL, null=True, related_name="roster")
     player_ships = models.ManyToManyField(Ship)
     player_clan_role = models.CharField(max_length=20, null=True)
     player_joined_at = models.IntegerField(null=True)
@@ -78,11 +81,14 @@ class Player(models.Model):
     # store when skill added to database (in case it needs to be deleted later)
     date_created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.player_nickname
+
 # ShipInstance: a ship owned by a specific player (extends Ship to include stats)
 class ShipInstance(models.Model):
 
     # identifiers
-    shipinstance_ship = models.ForeignKey(Ship, on_delete=models.SET_NULL, null=True)
+    shipinstance_ship = models.ForeignKey(Ship, on_delete=models.SET_NULL, null=True, related_name="player_fleet")
     shipinstance_player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
     # characteristics

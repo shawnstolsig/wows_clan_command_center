@@ -11,7 +11,7 @@
 
     {% comment %} Style {% endcomment %}
     <link rel="icon" href="{% static 'img\favicon.ico' %}"/>                {% comment %} Favicon       {% endcomment %}
-    <link rel="stylesheet" href="{% static 'css\bootstrap.min.css' %}" />   {% comment %} Bootstrap CSS {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css\bootstrap.min.css' %}" />   {% comment %} Bootstrap CSS    {% endcomment %}
     <link rel="stylesheet" href="{% static 'css\site.css' %}" />            {% comment %} Custom CSS    {% endcomment %}
 
 </head>
@@ -46,7 +46,7 @@
                         <a class="nav-link" href="{% url 'wowsopenid:logout' %}">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">{{request.user.username}}</a>
+                        <a class="nav-link" href="#"><strong>[{{ request.user.player.player_clan.clan_tag }}]</strong> {{request.user.username}}</a>
                     </li>
 
                 {% else %}
@@ -71,6 +71,7 @@
     <script src="{% static 'js\bootstrap.bundle.min.js' %}"></script>           {% comment %} Bootstrap/Popper  {% endcomment %}
     <script src="{% static 'js\axios.min.js' %}"></script>                      {% comment %} Axios             {% endcomment %}
     <script src="{% static 'js\vue.js' %}"></script>                            {% comment %} Vue               {% endcomment %}
+    <script src="{% static 'js\moment.js' %}"></script>                            {% comment %} Vue               {% endcomment %}
     <script src="{% static 'js\site.js' %}"></script>                           {% comment %} External JSpt     {% endcomment %}
     
     {% comment %} In-template Vue apps {% endcomment %}

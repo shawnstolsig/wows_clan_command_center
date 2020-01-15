@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block html_content %}
+<div class="credential-dialog">
     <p>This website uses Wargaming's authentication protocol...please click the button below to login!</p>
     <div>
         {% if user.is_authenticated %}
@@ -11,5 +12,6 @@
             <a href="{{ url }}">Click here to login with your wargaming account.</a>
         {% endif %}
     </div>
+</div>
 {% endblock html_content %}
     
