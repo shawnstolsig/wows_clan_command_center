@@ -22,4 +22,4 @@ no access token here?  look for cookies instead?
 
 from API reference:
 
-https://api.worldoftanks.com/wot/auth/login/?application_id=cdcbc9fdb2ee0eb2f701d4622deb485c
+https://api.worldoftanks.com/wot/auth/login/?application_id=
