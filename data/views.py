@@ -179,7 +179,6 @@ def update_clan_list_with_realm(clan_list, realm_url):
     print(f'returning from checking {realm_url} clans.  Non_realm_clans is {non_realm_clans}')
     return non_realm_clans
 
-
 # For updating the signed in user's Clan (and clan's Player, including their ships) info
 def update_user_clan(request, realm):
     # status message

@@ -43,14 +43,14 @@
                     <td><strong>[[ ship.shipinstance_ship_name.ship_tier ]] </strong></td>
                     <td><strong>[[ ship.shipinstance_ship_name.ship_nation ]] </strong></td>
                     <td><strong>[[ ship.shipinstance_ship_name.ship_class ]] </strong></td>
-                    <td>[[ ship.shipinstance_battles ]]</td>
-                    <td>[[ ((ship.shipinstance_wins/ship.shipinstance_battles) * 100).toFixed(2) + '%' ]]</td>
-                    <td>[[ parseInt(ship.shipinstance_xp/ship.shipinstance_battles) ]]</td>
-                    <td>[[ parseInt(ship.shipinstance_damage_dealt/ship.shipinstance_battles) ]]</td>
-                    <td>[[ ((ship.shipinstance_main_battery_hits/ship.shipinstance_main_battery_shots) * 100).toFixed(2) + '%' ]]</td>
-                    <td>[[ ((ship.shipinstance_main_torpedoes_hits/ship.shipinstance_torpedoes_battery_shots) * 100).toFixed(2) + '%' ]]</td>
-                    <td>[[ parseInt(ship.shipinstance_potential_damage/ship.shipinstance_battles) ]]</td>
-                    <td>[[ parseInt(ship.shipinstance_spotting_damage/ship.shipinstance_battles) ]]</td>
+                    <td>[[ checkValidValue( ship.shipinstance_battles ) ]]</td>
+                    <td>[[ checkValidValue(  ((ship.shipinstance_wins/ship.shipinstance_battles) * 100).toFixed(2) + '%' )]] </td>
+                    <td>[[ checkValidValue(parseInt(ship.shipinstance_xp/ship.shipinstance_battles) )]] </td>
+                    <td>[[ checkValidValue(parseInt(ship.shipinstance_damage_dealt/ship.shipinstance_battles) )]] </td>
+                    <td>[[ checkValidValue(((ship.shipinstance_main_battery_hits/ship.shipinstance_main_battery_shots) * 100).toFixed(2) + '%' )]] </td>
+                    <td>[[ checkValidValue(((ship.shipinstance_torpedoes_hits/ship.shipinstance_torpedoes_shots) * 100).toFixed(2) + "%" )]] </td>
+                    <td>[[ checkValidValue(parseInt(ship.shipinstance_potential_damage/ship.shipinstance_battles) )]] </td>
+                    <td>[[ checkValidValue(parseInt(ship.shipinstance_spotting_damage/ship.shipinstance_battles) )]] </td>
 
                 </tr>
         </table> 
@@ -64,7 +64,7 @@
 
 {% block js_content %}
 
-
+<script>
 // Vue app templates
 let vm = new Vue({
     el: "#app",
@@ -98,8 +98,12 @@ let vm = new Vue({
         },
         checkClass: function(shipClass){
             return  !this.classFilter || shipClass == this.classFilter
+        },
+        checkValidValue(value){
+            if(value == 'NaN' || value == "NaN%") return '-';
+            if(isNaN(value) && (typeof value) != 'string') return '-';
+            return value
         }
-
     },
     computed: {
     }, 
@@ -108,5 +112,5 @@ let vm = new Vue({
 
     }
 });
-
+</script>
 {% endblock js_content %}
